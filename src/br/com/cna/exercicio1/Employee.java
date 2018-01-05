@@ -1,4 +1,4 @@
-package br.com.cna;
+package br.com.cna.exercicio1;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -60,16 +60,47 @@ public class Employee implements Serializable {
 		long tempoProcessamento1 = serialize1(records);
 
 		// implementação modelo 2 -> serialize / desserialize 2
-		long tempoProcessamento2 = 0;// serialize2(records);
+		long tempoProcessamento2 = serialize2(records);
 
 		System.out.println("Tempo de processamento 1= " + tempoProcessamento1);
 		System.out.println("Tempo de processamento 2= " + tempoProcessamento2);
+		
+		if(tempoProcessamento1 < tempoProcessamento2)
+			System.out.println("Processamento 1 tem a melhor performance");
+		else
+			System.out.println("Processamento 2 tem a melhor performance");
 	}
-	// ...
+	
+	private static long serialize2(List<Employee> records) {
+		long tempoInicial = System.currentTimeMillis(), tempoFinal = 0, tempoMetodo=0;
+		try {
+			FileOutputStream fileStream = new FileOutputStream("serialize1.ser");
+			
+			//serializando
+			ObjectOutputStream os = new ObjectOutputStream(fileStream);
+			os.writeObject(records); // Serializa os objetos e grava no arquivo serialize1.ser
+
+			// desserializando
+			FileInputStream fileInputStream = new FileInputStream("serialize1.ser");
+			ObjectInputStream is = new ObjectInputStream(fileInputStream);
+			is.readObject();
+
+			os.close();
+			is.close();
+			
+			tempoFinal = System.currentTimeMillis();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		tempoMetodo = tempoFinal - tempoInicial;
+		return tempoMetodo;
+	}
 
 	private static long serialize1(List<Employee> records) {
 		long tempoInicial = System.currentTimeMillis(), tempoFinal = 0, tempoMetodo=0;
-		// execução do método
 		try {
 			FileOutputStream fileStream = new FileOutputStream("serialize1.ser");
 			
